@@ -1,68 +1,247 @@
-import random
-import time
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Ular Tangga Interaktif</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 { color: #333; margin-bottom: 10px; }
+        .game-container {
+            display: flex;
+            gap: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        /* Papan Grid 10x10 */
+        #board {
+            display: grid;
+            grid-template-columns: repeat(10, 50px);
+            grid-template-rows: repeat(10, 50px);
+            border: 3px solid #333;
+            background-color: #fff;
+        }
+        .cell {
+            border: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            position: relative;
+        }
+        /* Pewarnaan Kotak Istimewa (Simulasi Ular & Tangga) */
+        .ladder-start { background-color: #e2f0cb; color: #2e7d32; }
+        .snake-start { background-color: #ffdde1; color: #c62828; }
+        
+        /* Pion Pemain */
+        .pions-container {
+            display: flex;
+            gap: 4px;
+            position: absolute;
+            bottom: 2px;
+        }
+        .pion {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .pion-1 { background-color: #2196F3; } /* Merah */
+        .pion-2 { background-color: #FF9800; } /* Kuning */
 
-# Konfigurasi Tangga dan Ular
-# Format: {posisi_awal: posisi_tujuan}
-TANGGA = {4: 14, 9: 31, 20: 38, 28: 84, 40: 59, 51: 67, 63: 81, 71: 91}
-ULAR = {17: 7, 54: 34, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 99: 78}
+        /* Panel Kontrol */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 250px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .status {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+        }
+        button:hover { background-color: #45a049; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .dice-view {
+            font-size: 48px;
+            margin: 15px 0;
+        }
+        .log {
+            width: 100%;
+            height: 120px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            background: #fff;
+            padding: 5px;
+            font-size: 13px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
 
-def lempar_dadu():
-    """Menghasilkan angka acak antara 1 sampai 6."""
-    return random.randint(1, 6)
-
-def cek_posisi(posisi, nama_pemain):
-    """Memeriksa apakah pemain menginjak ular atau tangga."""
-    if posisi in TANGGA:
-        print(f"▲ Hore! {nama_pemain} menemukan TANGGA. Naik dari {posisi} ke {TANGGA[posisi]}!")
-        return TANGGA[posisi]
-    elif posisi in ULAR:
-        print(f"▼ Oh tidak! {nama_pemain} digigit ULAR. Turun dari {posisi} ke {ULAR[posisi]}!")
-        return ULAR[posisi]
-    return posisi
-
-def main():
-    print("=" * 40)
-    print("      SELAMAT DATANG DI ULAR TANGGA      ")
-    print("=" * 40)
+    <h1>🎲 Game Ular Tangga 🎲</h1>
     
-    # Input nama pemain
-    pemain1 = input("Masukkan nama Pemain 1: ") or "Pemain 1"
-    pemain2 = input("Masukkan nama Pemain 2: ") or "Pemain 2"
-    
-    # Posisi awal pemain
-    posisi = {pemain1: 0, pemain2: 0}
-    giliran = [pemain1, pemain2]
-    
-    game_over = False
-    
-    while not game_over:
-        for p i giliran:
-            print(f"\n--- Giliran {p} (Posisi Sekarang: {posisi[p]}) ---")
-            input("Tekan [ENTER] untuk melempar dadu...")
-            
-            dadu = lempar_dadu()
-            print(f"🎲 Angka dadu yang keluar: {dadu}")
-            
-            # Update posisi baru
-            posisi_baru = posisi[p] + dadu
-            
-            if posisi_baru > 100:
-                print(f"Angka terlalu besar! {p} tetap di posisi {posisi[p]}. (Butuh pas ke 100)")
-            else:
-                posisi[p] = posisi_baru
-                # Cek apakah ada ular atau tangga
-                posisi[p] = cek_posisi(posisi[p], p)
-                print(f"📍 Posisi {p} sekarang: {posisi[p]}")
-            
-            # Cek pemenang
-            if posisi[p] == 100:
-                print("\n" + "=" * 40)
-                print(f"🎉 Selamat! {p} BERHASIL MENCAPAI KOTAK 100 DAN MENANG! 🎉")
-                print("=" * 40)
-                game_over = True
-                break
-                
-            time.sleep(0.5) # Efek jeda biar lebih dramatis
+    <div class="game-container">
+        <div id="board"></div>
 
-if __name__ == "__main__":
-    main()
+        <div class="controls">
+            <div id="status-text" class="status">Giliran: <span style="color:#2196F3">Pemain 1 (Biru)</span></div>
+            <div id="dice-icon" class="dice-view">🎲</div>
+            <button id="roll-btn" onclick="mainkanGiliran()">Lempar Dadu</button>
+            <p id="info-text">Klik tombol untuk melangkah.</p>
+            
+            <div style="font-weight: bold; align-self: flex-start; margin-top: 10px;">Log Aktivitas:</div>
+            <div id="log-box" class="log">Selamat bertanding! <br></div>
+        </div>
+    </div>
+
+<script>
+    // Konfigurasi Papan, Ular, dan Tangga
+    const TANGGA = {4: 14, 9: 31, 20: 38, 28: 84, 40: 59, 51: 67, 63: 81, 71: 91};
+    const ULAR = {17: 7, 54: 34, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 99: 78};
+    const DADO_ICONS = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+
+    let posisi = { 1: 0, 2: 0 };
+    let giliranSekarang = 1; // 1 = Pemain 1, 2 = Pemain 2
+    let gameSelesai = false;
+
+    // Membuat Papan 100 Kotak dengan susunan Boustrophedon (Ular/Zik-zak)
+    const board = document.getElementById('board');
+    let cells = {};
+
+    for (let row = 9; row >= 0; row--) {
+        let isGenap = row % 2 === 0;
+        for (let col = 0; col < 10; col++) {
+            let colActual = isGenap ? (9 - col) : col;
+            let nomorKotak = (row * 10) + colActual + 1;
+
+            let cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.innerText = nomorKotak;
+            cell.id = 'cell-' + nomorKotak;
+
+            // Warnai kotak ular/tangga sebagai penanda text
+            if (TANGGA[nomorKotak]) cell.classList.add('ladder-start');
+            if (ULAR[nomorKotak]) cell.classList.add('snake-start');
+
+            // Wadah pion di dalam kotak
+            let pionCont = document.createElement('div');
+            pionCont.className = 'pions-container';
+            pionCont.id = 'pions-' + nomorKotak;
+            cell.appendChild(pionCont);
+
+            board.appendChild(cell);
+            cells[nomorKotak] = pionCont;
+        }
+    }
+
+    // Fungsi menggambar ulang posisi pion di papan
+    function updatePapan() {
+        // Bersihkan seluruh pion lama
+        for (let i = 1; i <= 100; i++) {
+            if(cells[i]) cells[i].innerHTML = '';
+        }
+        // Gambar pion Pemain 1 jika sudah mulai (posisi > 0)
+        if (posisi[1] > 0) {
+            cells[posisi[1]].innerHTML += '<div class="pion pion-1" title="Pemain 1"></div>';
+        }
+        // Gambar pion Pemain 2 jika sudah mulai (posisi > 0)
+        if (posisi[2] > 0) {
+            cells[posisi[2]].innerHTML += '<div class="pion pion-2" title="Pemain 2"></div>';
+        }
+    }
+
+    function cetakLog(pesan) {
+        const logBox = document.getElementById('log-box');
+        logBox.innerHTML += pesan + "<br>";
+        logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function mainkanGiliran() {
+        if (gameSelesai) return;
+
+        let dadu = Math.floor(Math.random() * 6) + 1;
+        document.getElementById('dice-icon').innerText = DADO_ICONS[dadu - 1];
+        
+        let pemain = giliranSekarang;
+        let namaPemain = pemain === 1 ? "Pemain 1 (Biru)" : "Pemain 2 (Jingga)";
+        
+        cetakLog(`🎲 ${namaPemain} mengocok dadu: <b>${dadu}</b>`);
+        
+        let posisiBaru = posisi[pemain] + dadu;
+
+        if (posisiBaru > 100) {
+            cetakLog(`⚠️ Angka kelebihan! ${namaPemain} tetap di kotak ${posisi[pemain]}`);
+        } else {
+            posisi[pemain] = posisiBaru;
+            
+            // Cek Ular atau Tangga
+            if (TANGGA[posisi[pemain]]) {
+                let tujuan = TANGGA[posisi[pemain]];
+                cetakLog(`▲ Hore! Kena TANGGA di ${posisi[pemain]}, naik ke <b>${tujuan}</b>!`);
+                posisi[pemain] = tujuan;
+            } else if (ULAR[posisi[pemain]]) {
+                let tujuan = ULAR[posisi[pemain]];
+                cetakLog(`▼ Oh tidak! Digigit ULAR di ${posisi[pemain]}, turun ke <b>${tujuan}</b>.`);
+                posisi[pemain] = tujuan;
+            }
+        }
+
+        updatePapan();
+
+        // Cek Pemenang
+        if (posisi[pemain] === 100) {
+            document.getElementById('status-text').innerHTML = `🎉 <span style="color:green">${namaPemain} MENANG!</span> 🎉`;
+            cetakLog(`🏆 <b>${namaPemain} mencapai kotak 100 dan memenangkan permainan!</b>`);
+            document.getElementById('roll-btn').disabled = true;
+            gameSelesai = true;
+            return;
+        }
+
+        // Ganti Giliran
+        giliranSekarang = giliranSekarang === 1 ? 2 : 1;
+        let namaBerikutnya = giliranSekarang === 1 ? "Pemain 1 (Biru)" : "Pemain 2 (Jingga)";
+        let warnaBerikutnya = giliranSekarang === 1 ? "#2196F3" : "#FF9800";
+        
+        document.getElementById('status-text').innerHTML = `Giliran: <span style="color:${warnaBerikutnya}">${namaBerikutnya}</span>`;
+    }
+
+    // Jalankan render awal
+    updatePapan();
+</script>
+
+</body>
+</html>
